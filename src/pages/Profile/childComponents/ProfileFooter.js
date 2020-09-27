@@ -14,7 +14,7 @@ export const ProfileFooter = () => {
                     </g>
                 </g>
             </svg>
-                <div className={"flex-column"}>
+                <div className={"flex-column align-self-end mb-2"}>
                     <span className={"text-light"}>Создано специально для тестового задания.</span>
                     <span className={"text-light"}>(c) 2020 All rights reserved.</span>
                 </div>

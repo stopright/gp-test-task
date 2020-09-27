@@ -10,7 +10,7 @@ function AuthForm() {
 
     const {loginFn} = useContext(AuthContext)
 
-    const {showMessage} = useContext(MessageContext)
+    const {showMessage, hideMessage} = useContext(MessageContext)
 
     const {loading, request, error, clearError, setError} = useHttp()
 
@@ -35,6 +35,8 @@ function AuthForm() {
     const loginHandler = async (event) => {
 
         event.preventDefault()
+
+        hideMessage()
 
         if (!(formState.login && formState.password)) {
             setError("Укажи данные для входа!")

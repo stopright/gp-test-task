@@ -1,26 +1,89 @@
-import React from 'react'
+import React, {useState, useEffect, useContext} from 'react'
+import {useHttp} from "../../../hooks/http.hook";
+import sha256 from "crypto-js/sha256";
+import {MessageContext} from "../../../context/messageBox/messageContext";
+import {AuthContext} from "../../../context/auth/authContext";
+
+const MOCKUP_URL = "https://64e1e8ca-32f9-4742-97e7-fe71a2ffe82c.mock.pstmn.io"
 
 function AuthForm() {
 
-    document.title = "Профиль пользователя"
+    const {loginFn} = useContext(AuthContext)
+
+    const {showMessage} = useContext(MessageContext)
+
+    const {loading, request, error, clearError, setError} = useHttp()
+
+    const [formState, setForm] = useState({
+        login: null,
+        password: null
+    })
+
+    useEffect(() => {
+
+        if (!error) return
+
+        showMessage(error)
+        clearError()
+
+    }, [error, showMessage, clearError])
+
+    const changeHandler = (event) => {
+        setForm({...formState, [event.target.name]: event.target.value})
+    }
+
+    const loginHandler = async (event) => {
+
+        event.preventDefault()
+
+        if (!(formState.login && formState.password)) {
+            setError("Укажи данные для входа!")
+            return
+        }
+
+        const hashed_password = sha256(formState.password)
+
+        const request_url = `${MOCKUP_URL}/auth/?login=${formState.login}&password_hash=${hashed_password}`
+
+        try {
+
+        const response = await request(request_url, 'GET')
+        loginFn(response)
+
+        }
+
+        catch (e) {
+
+            showMessage(e.message)
+
+        }
+    }
 
     return (
         <form>
             <div className="form-group">
-                <label htmlFor="exampleInputEmail1">Email address</label>
-                <input type="email" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"/>
-                    <small id="emailHelp" className="form-text text-muted">We'll never share your email with anyone
-                        else.</small>
+                <label htmlFor="login">Логин:</label>
+                <input type="text" className="form-control" id="login" name="login" onChange={changeHandler}/>
             </div>
             <div className="form-group">
-                <label htmlFor="exampleInputPassword1">Password</label>
-                <input type="password" className="form-control" id="exampleInputPassword1"/>
+                <label htmlFor="password">Пароль:</label>
+                <input type="password" className="form-control" id="password" name="password" onChange={changeHandler}/>
             </div>
-            <div className="form-group form-check">
-                <input type="checkbox" className="form-check-input" id="exampleCheck1"/>
-                    <label className="form-check-label" htmlFor="exampleCheck1">Check me out</label>
-            </div>
-            <button type="submit" className="btn btn-primary">Submit</button>
+                <button type="submit" className="btn btn-primary" onClick={loginHandler}>
+
+                    { loading ?
+                        (<>
+                        <div className="spinner-border spinner-border-sm" role="status">
+                            <span className="sr-only"/>
+                        </div>
+                        <span> Входим... </span>
+                        </>
+                        ) : (
+                        <span>Войти</span>
+                        )
+                }
+
+                </button>
         </form>
     )
 }

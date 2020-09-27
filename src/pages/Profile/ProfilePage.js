@@ -1,14 +1,27 @@
-import React from 'react'
+import React, {useEffect, useContext} from 'react'
+import {ProfileHeader} from "./childComponents/ProfileHeader"
+import {ProfileBody} from "./childComponents/ProfileBody"
+import {ProfileFooter} from "./childComponents/ProfileFooter"
+import {AuthContext} from "../../context/auth/authContext";
 
-function ProfilePage() {
+export const ProfilePage = () => {
 
-    document.title = "Профиль пользователя"
+    const authObj = useContext(AuthContext)
+    const {authData} = authObj
+    const authFunctions = {
+        loginFn: authObj.loginFn,
+        logoutFn: authObj.logoutFn
+    }
+
+    useEffect(() => {
+        document.title = "Профиль пользователя"
+    }, [])
 
     return (
         <div>
-            <img src="https://pm1.narvii.com/6820/23b459f5e50f3ca2579a927b11064e0774356cfbv2_hq.jpg" alt="yes" />
-        </div>
+            <ProfileHeader authData={authData} authFunctions={authFunctions}/>
+            <ProfileBody productArray={authData.products}/>
+            <ProfileFooter/>
+       </div>
 )
 }
-
-export default ProfilePage

@@ -15,12 +15,14 @@ export const useHttp = () => {
             })
 
             if (!data.ok) {
-                throw new Error('Something gone wrong...')
+                const resBody = await data.json()
+
+                throw new Error(`Ошибка: ${resBody.error || 'Something gone wrong...'}`)
             }
 
-            const response_body = await data.json()
+            const responseBody = await data.json()
 
-            return response_body
+            return responseBody
         }
 
         catch (e) {

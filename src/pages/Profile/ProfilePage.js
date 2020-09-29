@@ -14,7 +14,7 @@ export const ProfilePage = () => {
     }
 
     useEffect(() => {
-        document.title = "Профиль пользователя"
+        document.title = `Профиль пользователя ${authData.name}`
     }, [])
 
     return (

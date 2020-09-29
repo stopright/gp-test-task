@@ -37,6 +37,18 @@
   justify-content: space-between;
 }
 
+.products-list {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.products-list:after {
+  content: "";
+  flex-basis: 18rem;
+}
+
 .rounded-top {
   border-top-left-radius: 6px !important;
   border-top-right-radius: 6px !important;
